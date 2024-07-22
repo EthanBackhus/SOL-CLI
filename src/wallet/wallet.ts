@@ -15,11 +15,4 @@ export class Wallet {
   
     //TODO:
     // deposit & withdraw functions
-  
-    
-  
-    // Method to get wallet balance
-    getBalance() {
-      return this.solBalance;
-    }
   }
