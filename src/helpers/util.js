@@ -1,26 +1,9 @@
-const {
-  TOKEN_PROGRAM_ID,
-  SPL_ACCOUNT_LAYOUT,
-  buildSimpleTransaction,
-} = require("@raydium-io/raydium-sdk");
+const {TOKEN_PROGRAM_ID, SPL_ACCOUNT_LAYOUT, buildSimpleTransaction,} = require("@raydium-io/raydium-sdk");
 const { PublicKey, VersionedTransaction, Keypair } = require("@solana/web3.js");
-const {
-  addLookupTableInfo,
-  connection,
-  makeTxVersion,
-  wallet,
-} = require("./config.js");
+const {addLookupTableInfo,connection,makeTxVersion,wallet,} = require("./config.js");
 const { Metaplex } = require("@metaplex-foundation/js");
 const fs = require("fs");
-const {
-  Connection,
-  LAMPORTS_PER_SOL,
-  SystemProgram,
-  TransactionInstruction,
-  TransactionMessage,
-  Transaction,
-  ComputeBudgetProgram,
-} = require("@solana/web3.js");
+const {Connection,LAMPORTS_PER_SOL,SystemProgram,TransactionInstruction,TransactionMessage,Transaction,ComputeBudgetProgram,} = require("@solana/web3.js");
 
 /**
  * Retrieves the number of decimals for a given mint address.

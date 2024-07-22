@@ -34,7 +34,7 @@ program
       console.error("❌ Missing required options");
       process.exit(1);
     }
-    password = option.password;
+    password = options.password;
   });
 program.parse();
 

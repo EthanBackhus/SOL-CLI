@@ -332,9 +332,7 @@ async function getPoolIdByPair(baseToken) {
   const quoteToken = "So11111111111111111111111111111111111111112";
   const poolId = await queryLpPair(baseToken, quoteToken);
   if (poolId.Raydium_LiquidityPoolv4.length === 0) {
-    console.log(
-      `Cannot find any liquidity pool related to ${baseToken}/${quoteToken}`
-    );
+    console.log(`Cannot find any liquidity pool related to ${baseToken}/${quoteToken}`);
     console.log(`It may be a token launched on pump.fun, we try to find ${quoteToken}/${baseToken}`)
     const poolIdByPair = await queryLpPair(quoteToken, baseToken);
     if (poolIdByPair.Raydium_LiquidityPoolv4.length === 0) {

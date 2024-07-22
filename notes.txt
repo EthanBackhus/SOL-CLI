@@ -157,3 +157,12 @@ pubkey: PubKey
 isSigner: Boolean
 // true if the pubkey can be loaded as a read-write account
 isWritable: Boolean
+
+
+(GRAF)
+node boost_volume --token_address 9EL3CHVQS3nwUFhyVT7AGbttRsbJ5UE8Qjnw5ZAtkUhr --cluster mainnet --sol_per_order 0.00001
+
+(RAMY)
+node boost_volume --token_address CVDfKWNF7cojbjDYMZK6U4wKWSzs4PqKiyceNaJszvEj --cluster mainnet --sol_per_order 0.00001
+
+https://mainnet.helius-rpc.com/?api-key=448fa184-4e3c-419b-a456-e9fd6889b659

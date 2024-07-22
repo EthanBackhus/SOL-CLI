@@ -1,0 +1,12 @@
+{
+    "compilerOptions": {
+      "module": "commonjs",  // or "es6" if you're using ES modules
+      "target": "es6",
+      "outDir": "./dist",
+      "rootDir": "./src",
+      "esModuleInterop": true,
+      "moduleResolution": "node",
+      "resolveJsonModule": true
+    },
+    "include": ["src/**/*"]
+  }

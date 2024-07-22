@@ -64,7 +64,6 @@ async function boost_volume() {
         tokenAddress,
         solPerOrder
       );
-      //console.log("SIGNATURE XDXDXD : ", signature);
       await error_handling(signature, confirmed);
     } catch (e) {
       console.log(e);

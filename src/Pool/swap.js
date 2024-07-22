@@ -59,9 +59,7 @@ let tokenToPoolIdMap = {
 async function swapOnlyAmm(input) {
   // -------- pre-action: get pool info --------\
 
-  const poolKeys = await formatAmmKeysById_swap(
-    new PublicKey(input.targetPool)
-  );
+  const poolKeys = await formatAmmKeysById_swap(new PublicKey(input.targetPool));
   assert(poolKeys, "cannot find the target pool");
   const poolInfo = await Liquidity.fetchInfo({
     connection: connection,
@@ -267,10 +265,12 @@ async function swap(
     tokenAccount,
     wallet.publicKey
   );
+  //console.log("!!!! ASSOCIATED TOKEN ADDRESS: ", mintAta);
   const quoteAta = await getAssociatedTokenAddressSync(
     Token.WSOL.mint,
     wallet.publicKey
   );
+  //console.log("QUOTEASSOCIATEDTOKENADDRESS: ", quoteAta);
   if (side === "buy") {
     // buy - use sol to swap to the token
 
@@ -316,6 +316,7 @@ async function swap(
   } else {
     // sell
     const { tokenName, tokenSymbol } = await getTokenMetadata(tokenAddress);
+    //console.log("tokenname: ", tokenName, " tokenSymbol: ", tokenSymbol);
     const inputToken = new Token(
       TOKEN_PROGRAM_ID,
       tokenAccount,
