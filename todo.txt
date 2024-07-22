@@ -1,0 +1,9 @@
+TODO: 7/21/24
+
+1. Find way to encrypt secretKeys of dbs
+2. create 20,000 wallets and encrypt them in the dbs
+3. backup the db
+4. write scripts to fund all of the wallets
+5. write threadmanager program that will own all of the threads of the vol bot
+6. write different variations of vol bot script (buy and hold variation, buy and sell 0.00001 variation, volume variation (buy and sell 1 SOL))
+7. Create telegram bot that will be the UI for the vol bot
