@@ -1,6 +1,6 @@
 import { DBHandler } from "./src/database/dbHandler";
 import { PublicKey, Keypair } from "@solana/web3.js";
-import { Wallet} from "./src/wallet/wallet";
+import { Wallet, WalletType} from "./src/wallet/wallet";
 import { generateKeypair } from "./src/wallet/walletGenerator";
 import { MAINNET_FARM_POOLS } from "@raydium-io/raydium-sdk";
 import { WalletManager } from "./src/wallet/WalletManager";
@@ -33,10 +33,16 @@ async function main()
     const walletManager = new WalletManager(encryptionKey);
     await walletManager.initialize();
 
-    console.log(walletManager.wallets);
-    //await walletManager.generateWallets(1000);
+    // update DB
+    //await walletManager.dbHandler.updateDatabase(walletManager.wallets);
+
+    const newPubKey = new PublicKey('5wotKZQU7E64Jj1kGrxfmJoNcunhsfWiqNs6yxnxYkRh');
+  
+    
+    //console.log(info);
 }
 
+// const update = { walletType: WalletType.volLarge };
 
 
 

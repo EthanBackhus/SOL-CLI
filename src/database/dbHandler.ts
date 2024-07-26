@@ -1,5 +1,5 @@
 import  { generateKeypair } from "../wallet/walletGenerator";
-import mysql from 'mysql2/promise';
+import mysql, { OkPacket, ResultSetHeader } from 'mysql2/promise';
 import { Wallet } from "../wallet/wallet";
 
 export class DBHandler {
@@ -10,7 +10,7 @@ export class DBHandler {
         this._pool = mysql.createPool({
             host: 'localhost',
             user: 'ethanbackhus',
-            password: 'Skyrim2014$250067862500',
+            password: 'Skyrim2014$250067862500',    // TODO: change this to encryptionKey????
             database: 'ethanbackhus'
         });
         this._encryptionKey = encryptionKey;  // passing encryption key in as a object parameter
@@ -27,9 +27,9 @@ export class DBHandler {
       const connection = await this._pool.getConnection();
       try {
           const [results] = await connection.execute(`
-              INSERT INTO wallets (publicKey, secretKey, solBalance, wSolBalance)
-              VALUES (?, AES_ENCRYPT(?, ?), ?, ?)
-          `, [wallet.publicKey, wallet.secretKey, this._encryptionKey, wallet.solBalance, wallet.wSolBalance]);
+              INSERT INTO wallets (publicKey, secretKey, solBalance, wSolBalance, walletType)
+              VALUES (?, AES_ENCRYPT(?, ?), ?, ?, ?)
+          `, [wallet.publicKey, wallet.secretKey, this._encryptionKey, wallet.solBalance, wallet.wSolBalance, wallet.walletType]);
           console.log('Wallet inserted successfully:', results);
       } catch (error) {
           console.error('Error inserting wallet:', error);
@@ -61,7 +61,7 @@ export class DBHandler {
     }
 
     /**
-    * Modifies a wallet stored in teh db
+    * Modifies a wallet stored in the db
     * @async
     * @function modifyWallet
     * @param {number} walletId - the Wallet id
@@ -87,11 +87,73 @@ export class DBHandler {
       }
     }
 
+    async modifyWalletsInRange(fromWalletId: number, toWalletId: number, updates: Partial<Wallet>): Promise<void> {
+        const connection = await this._pool.getConnection();
+        try{
+            const updateKeys = Object.keys(updates);
+            const updateValues = Object.values(updates);
+            const updateSetters = updateKeys.map((key, index) => 
+                key === 'secretKey' ? `${key} = AES_ENCRYPT(?, '${this._encryptionKey}')` : `${key} = ?`
+            ).join(', ');
+
+            const query = `
+                UPDATE wallets
+                SET ${updateSetters}
+                WHERE walletId BETWEEN ? AND ?
+            `;
+            const [results] = await connection.execute(query, [...updateValues, fromWalletId, toWalletId]);
+            console.log('Wallets updated successfully: ', results);
+        } catch (error) {
+            console.error('Error updating wallets: ', error);
+        } finally {
+            connection.release();
+        }
+    }
+
+    async updateDatabase(wallets: Wallet[], batchSize: number = 1000): Promise<void> {
+        const connection = await this._pool.getConnection();
+        try {
+            // Split wallets into batches
+            for (let i = 0; i < wallets.length; i += batchSize) {
+                const batch = wallets.slice(i, i + batchSize);
+                
+                // Build the query for this batch
+                const updateQueries = batch.map(wallet => {
+                    const updateKeys = ['solBalance', 'wSolBalance', 'walletType']; // Add any other fields to be updated
+                    const updateSetters = updateKeys.map(key => key === 'secretKey' 
+                        ? `${key} = AES_ENCRYPT(?, '${this._encryptionKey}')` 
+                        : `${key} = ?`
+                    ).join(', ');
+                    
+                    return {
+                        query: `
+                            UPDATE wallets
+                            SET ${updateSetters}
+                            WHERE walletId = ?
+                        `,
+                        params: [...updateKeys.map(key => wallet[key]), wallet.walletId]
+                    };
+                });
+    
+                // Execute all queries in this batch
+                await Promise.all(updateQueries.map(async ({ query, params }) => {
+                    await connection.execute(query, params);
+                }));
+            }
+    
+            console.log('All wallets updated successfully');
+        } catch (error) {
+            console.error('Error updating wallets:', error);
+        } finally {
+            connection.release();
+        }
+    }
+
     async getWalletById(walletId: number): Promise<Wallet | null> {
       const connection = await this._pool.getConnection();
       try {
           const [rows]: [any[], any] = await connection.execute(`
-              SELECT publicKey, AES_DECRYPT(secretKey, ?) AS secretKey, solBalance, wSolBalance
+              SELECT publicKey, AES_DECRYPT(secretKey, ?) AS secretKey, solBalance, wSolBalance, walletType
               FROM wallets
               WHERE walletId = ?
           `, [this._encryptionKey, walletId]);
@@ -104,6 +166,7 @@ export class DBHandler {
                   secretKey: row.secretKey.toString(), // Convert Buffer to string
                   solBalance: row.solBalance,
                   wSolBalance: row.wSolBalance,
+                  walletType: row.walletType
               };
           } else {
               return null;
@@ -116,11 +179,57 @@ export class DBHandler {
       }
     }
 
+    async retrieveWalletByPublicKey(publicKey: string): Promise<Wallet> {
+        const connection = await this._pool.getConnection();
+
+        try {
+            // Execute the SELECT query to retrieve the wallet by public key
+            const [rows] = await connection.execute(`
+              SELECT walletId, publicKey, AES_DECRYPT(secretKey, ?) AS secretKey, solBalance, wSolBalance, walletType
+              FROM wallets
+              WHERE publicKey = ?
+            `, [this._encryptionKey, publicKey]);
+
+            // Check if the wallet was found
+            if (rows[0] != null) {  
+                console.log("wallet found");
+                const walletInfo = rows[0];
+                const foundWallet = new Wallet(walletInfo.walletId, walletInfo.publicKey, walletInfo.secretKey.toString(), walletInfo.solBalance, walletInfo.wSolBalance, walletInfo.walletType);
+                return foundWallet;
+            } else {
+                console.log("wallet not found");
+                return null; // No wallet found with the given public key
+            }
+            
+        } catch (error) {
+            console.error('Error executing query:', error);
+            throw error;
+        } finally {
+            // Close the database connection
+            await connection.release();
+        }
+    }
+
+    async updateSolBalanceOfWallet(publicKey: string, updatedSolBalance: number): Promise<void> {
+        const connection = await this._pool.getConnection();
+        
+        const [result] = await connection.execute(
+            'UPDATE wallets SET solBalance = ? WHERE publicKey = ?',
+            [updatedSolBalance, publicKey]
+          );
+        
+        if (result[0] != null) {
+          console.log('Wallet not found');
+        } else {
+          console.log('Wallet updated successfully');
+        }
+    }
+
     async getAllWallets(): Promise<Wallet[]> {
       const connection = await this._pool.getConnection();
       try {
           const [rows]: [any[], any] = await connection.execute(`
-              SELECT walletId, publicKey, AES_DECRYPT(secretKey, ?) AS secretKey, solBalance, wSolBalance
+              SELECT walletId, publicKey, AES_DECRYPT(secretKey, ?) AS secretKey, solBalance, wSolBalance, walletType
               FROM wallets
           `, [this._encryptionKey]);
 
@@ -130,6 +239,7 @@ export class DBHandler {
               secretKey: row.secretKey.toString(), // Convert Buffer to string
               solBalance: row.solBalance,
               wSolBalance: row.wSolBalance,
+              walletType: row.walletType
           }));
 
           return wallets;
@@ -145,7 +255,7 @@ export class DBHandler {
       const connection = await this._pool.getConnection();
       try {
           const [rows]: [any[], any] = await connection.execute(`
-              SELECT walletId, publicKey, AES_DECRYPT(secretKey, ?) AS secretKey, solBalance, wSolBalance
+              SELECT walletId, publicKey, AES_DECRYPT(secretKey, ?) AS secretKey, solBalance, wSolBalance, walletType
               FROM wallets
               WHERE walletId BETWEEN ? AND ?
           `, [this._encryptionKey, startId, endId]);
@@ -156,6 +266,7 @@ export class DBHandler {
               secretKey: row.secretKey.toString(), // Convert Buffer to string
               solBalance: row.solBalance,
               wSolBalance: row.wSolBalance,
+              walletType: row.walletType
           }));
 
           return wallets;
@@ -167,8 +278,6 @@ export class DBHandler {
       }
     }
       
-
-
     async createWalletsTable(): Promise<void> {
       const dbConnection = await this._pool.getConnection();
       try {
@@ -179,6 +288,7 @@ export class DBHandler {
                   secretKey VARBINARY(255),
                   solBalance FLOAT,
                   wSolBalance FLOAT,
+                  walletType ENUM('admin', 'hodl', 'volSmall', 'volLarge') NOT NULL,
                   UNIQUE INDEX unique_walletId (walletId)
               )
           `);
