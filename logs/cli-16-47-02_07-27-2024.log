@@ -1,0 +1,5 @@
+2024-07-27T20:47:02.961Z [info]: This message will be logged to both console and file.
+2024-07-27T20:47:02.965Z [info]: This message will be logged only to the file.
+2024-07-27T20:47:04.826Z [info]: WalletManager initialized
+2024-07-27T21:11:14.799Z [info]: Password correct. Access granted.
+2024-07-27T21:11:29.620Z [info]: Now closing. Database Synced

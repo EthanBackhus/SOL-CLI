@@ -7,6 +7,7 @@ import { WalletManager } from "./src/wallet/WalletManager";
 import { wallet } from "./src/helpers/config";
 const { program } = require("commander");
 
+/*
 let encryptionKey = "";
 
 program
@@ -25,21 +26,18 @@ program
   });
 program.parse();
 
+*/
 
 
 async function main()
 {
     // get walletManager and initialize it
-    const walletManager = new WalletManager(encryptionKey);
-    await walletManager.initialize();
+    //const walletManager = new WalletManager();
 
     // update DB
     //await walletManager.dbHandler.updateDatabase(walletManager.wallets);
 
-    const newPubKey = new PublicKey('5wotKZQU7E64Jj1kGrxfmJoNcunhsfWiqNs6yxnxYkRh');
-  
-    
-    //console.log(info);
+    //var wallet = await walletManager.updateSingularDbEntryWithSolBalance('5wotKZQU7E64Jj1kGrxfmJoNcunhsfWiqNs6yxnxYkRh');
 }
 
 // const update = { walletType: WalletType.volLarge };

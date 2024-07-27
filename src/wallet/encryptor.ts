@@ -25,7 +25,7 @@ program
   .option("-h, --help", "display help for command")
   .action((options) => {
     if (options.help) {
-      console.log(
+      console.log( 
         "node encryption --password <PASSWORD>"
       );
       process.exit(0);

@@ -1,6 +1,7 @@
 import  { generateKeypair } from "../wallet/walletGenerator";
 import mysql, { OkPacket, ResultSetHeader } from 'mysql2/promise';
 import { Wallet } from "../wallet/wallet";
+import logger from "../helpers/logger";
 
 export class DBHandler {
     private _pool: mysql.Pool;
@@ -30,9 +31,9 @@ export class DBHandler {
               INSERT INTO wallets (publicKey, secretKey, solBalance, wSolBalance, walletType)
               VALUES (?, AES_ENCRYPT(?, ?), ?, ?, ?)
           `, [wallet.publicKey, wallet.secretKey, this._encryptionKey, wallet.solBalance, wallet.wSolBalance, wallet.walletType]);
-          console.log('Wallet inserted successfully:', results);
+          logger.info("Wallet inserted successfully");
       } catch (error) {
-          console.error('Error inserting wallet:', error);
+          logger.info('Error inserting wallet:', error);
       } finally {
           connection.release();
       }
@@ -179,11 +180,12 @@ export class DBHandler {
       }
     }
 
-    async retrieveWalletByPublicKey(publicKey: string): Promise<Wallet> {
+    async getWalletByPublicKey(publicKey: string): Promise<Wallet> {
         const connection = await this._pool.getConnection();
 
         try {
             // Execute the SELECT query to retrieve the wallet by public key
+            console.log("wtf", this._encryptionKey);
             const [rows] = await connection.execute(`
               SELECT walletId, publicKey, AES_DECRYPT(secretKey, ?) AS secretKey, solBalance, wSolBalance, walletType
               FROM wallets
@@ -194,6 +196,7 @@ export class DBHandler {
             if (rows[0] != null) {  
                 console.log("wallet found");
                 const walletInfo = rows[0];
+                console.log(walletInfo);
                 const foundWallet = new Wallet(walletInfo.walletId, walletInfo.publicKey, walletInfo.secretKey.toString(), walletInfo.solBalance, walletInfo.wSolBalance, walletInfo.walletType);
                 return foundWallet;
             } else {
@@ -218,7 +221,7 @@ export class DBHandler {
             [updatedSolBalance, publicKey]
           );
         
-        if (result[0] != null) {
+        if (result[0] == null) {
           console.log('Wallet not found');
         } else {
           console.log('Wallet updated successfully');
@@ -277,6 +280,19 @@ export class DBHandler {
           connection.release();
       }
     }
+
+    async updateDbWithQuery(query: string): Promise<void> {
+        const connection = await this._pool.getConnection();
+        try{
+            const [results] = await connection.execute(query);
+            console.log("Db updated successfully");
+        }
+        catch(error) {
+            console.error("Error updating DB: ", error);
+        }
+    }
+
+    // ONE TIME USE
       
     async createWalletsTable(): Promise<void> {
       const dbConnection = await this._pool.getConnection();

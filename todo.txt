@@ -5,16 +5,30 @@ TODO: 7/21/24
 3. backup the db
 
 
+TODO:
+
+1. Continue to add new CLI features
+2. Transfer sol from admin wallet to db wallets
+3. Test features
+4. Create threadmanager program that will manage threads for all the db wallets
+
+
+
+good work today
+
+
+
+
+
+
+
+
 !IMPORTANT!!!!!!!!!!!!
 
 - TEST everything lol
 
 TEST To make sure the x.owner.publicKey is right (since the ownership hasn't been changed???)
 
-
-TO FIX:
-- Fix UpdateEntireDbWithSolBalances
-- Ensure that update wallet with sol balance is working
 
 
 

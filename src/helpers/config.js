@@ -28,6 +28,13 @@ const shyft_api_key = process.env.SHYFT_API_KEY; // your shyft api key
 const wallet = Keypair.fromSecretKey(bs58.decode(process.env.PRIVATE_KEY)); // your wallet
 const dev_endpoint = process.env.DEVNET_ENDPOINT; // devnet endpoint, if you use devnet
 const main_endpoint = process.env.MAINNET_ENDPOINT; // mainnet endpoint
+const PASSWORD = process.env.PASSWORD;
+const ENCRYPTION_KEY = process.env.ENCRYPTION_KEY;
+const ADMIN_WALLET_PUBLIC_KEY = process.env.ADMIN_WALLET_PUBLIC_KEY;
+const ADMIN_WALLET_SECRET_KEY = process.env.ADMIN_WALLET_SECRET_KEY;
+
+
+
 // const second_main_endpoint = process.env.SECOND_MAINNET_ENDPOINT; // if you use copy trade program, second mainnet endpoint
 // const RPC_Websocket_endpoint = process.env.WS_ENDPOINT;
 // const second_RPC_Websocket_endpoint = process.env.SECOND_WS_ENDPOINT; // if you use copy trade program
@@ -48,6 +55,8 @@ const dev_connection = new Connection(dev_endpoint, "confirmed"); // devnet conn
 const PROGRAMIDS = MAINNET_PROGRAM_ID; // raydium mainnet program address
 
 const RAYDIUM_MAINNET_API = RAYDIUM_MAINNET; // raydium mainnet program's api
+
+
 
 const makeTxVersion = TxVersion.V0; // LEGACY
 const _ENDPOINT = ENDPOINT; // raydium mainnet program's base api path
@@ -87,4 +96,8 @@ module.exports = {
   _ENDPOINT,
   shyft_api_key,
   jito_fee,
+  ENCRYPTION_KEY,
+  PASSWORD,
+  ADMIN_WALLET_PUBLIC_KEY,
+  ADMIN_WALLET_SECRET_KEY
 };

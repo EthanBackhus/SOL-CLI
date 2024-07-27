@@ -1,23 +1,29 @@
 import {Wallet, WalletType} from "./wallet";
 import {DBHandler} from "../database/dbHandler";
 import {generateKeypair} from "./walletGenerator";
-import { main_endpoint } from "../helpers/config";
+import {main_endpoint, ADMIN_WALLET_PUBLIC_KEY, ADMIN_WALLET_SECRET_KEY } from "../helpers/config";
 import { AccountInfo } from "@solana/web3.js";
+import logger from "../helpers/logger";
+import { TOKEN_PROGRAM_ID, AccountLayout } from "@solana/spl-token";
 import { Connection, Keypair, PublicKey, SystemProgram, Transaction, LAMPORTS_PER_SOL, sendAndConfirmRawTransaction, sendAndConfirmTransaction } from '@solana/web3.js';
+
 
 export class WalletManager {
     public wallets: Wallet[];
     public dbHandler: DBHandler;
     public connection: Connection;
+    public adminWallet: Wallet;
 
     constructor(encryptionKey: string){
         this.dbHandler = new DBHandler(encryptionKey);
         this.wallets = [];
+        this.adminWallet = new Wallet(0, ADMIN_WALLET_PUBLIC_KEY, ADMIN_WALLET_SECRET_KEY, 0, 0, WalletType.Admin);
         this.connection = new Connection(main_endpoint, "confirmed");
     }
 
     async initialize(): Promise<void> {
         this.wallets = await this.dbHandler.getAllWallets();
+        await this.updateAdminWalletBalance();
     }
 
     async generateNewWallets(numWalletsToGenerate: number)
@@ -25,10 +31,11 @@ export class WalletManager {
         for(let i = 0; i < numWalletsToGenerate; i++)
         {
             var newKp = generateKeypair();
-            var newWallet = new Wallet(0, newKp.publicKeyString, newKp.secretKeyToString, 0, 0, WalletType.Hodl);
-            console.log("new wallet generated: ", newWallet);
-            this.dbHandler.insertWallet(newWallet);
-            console.log("new wallet inserted into db");
+            const newWallet = new Wallet(0, newKp.publicKeyString, newKp.secretKeyToString, 0, 0, WalletType.Hodl);
+            var newWalletLog = newWallet;
+            newWalletLog.secretKey = "***";
+            logger.info("New wallet generated: ", newWalletLog);
+            await this.dbHandler.insertWallet(newWallet);
         }
     }
 
@@ -146,26 +153,18 @@ export class WalletManager {
         }
     }
 
-    // FIX THIS
     async updateEntireDbWithSolBalances(): Promise<void> {
-
         var accounts = await this.fetchBalances();
 
         // create a batch query update
         const updateQueries = accounts.map(x => {
-            const publicKey = x.owner.toBase58();           // is this right?
-            const lamports = this.extractLamports(x.data);
+            const publicKey = x.owner.toString();           // is this right?
+            const lamports = x.lamports;
 
             return `UPDATE wallets SET solBalance = ${lamports} WHERE publicKey = '${publicKey}'`;
         }).join('; ');
 
-        try {
-            // PASS THIS TO DB HANDLER TO EXECUTE
-            //await this.dbHandler.execute(updateQueries);
-            console.log('Balances updated successfully.');
-          } catch (error) {
-            console.error('Error updating balances:', error);
-          }
+        await this.dbHandler.updateDbWithQuery(updateQueries);
     }
 
     async updateSingularDbEntryWithSolBalance(walletToUpdatePublicKeyString: string): Promise<void> {
@@ -192,6 +191,37 @@ export class WalletManager {
 
     async generateNewTable(): Promise<void> {
         this.dbHandler.createWalletsTable();
+    }
+
+    async updateAdminWalletBalance(): Promise<void> {
+        const adminWalletPubKey = new PublicKey(ADMIN_WALLET_PUBLIC_KEY);
+        this.adminWallet.solBalance = await this.connection.getBalance(adminWalletPubKey);
+
+        // Step 2: Get wSOL balance
+         // wSOL Mint address (mainnet)
+         const WSOL_MINT_ADDRESS = new PublicKey('So11111111111111111111111111111111111111112');
+
+
+         // Get all token accounts owned by the main account
+        const tokenAccounts = await this.connection.getParsedTokenAccountsByOwner(
+            adminWalletPubKey,
+           {
+             programId: TOKEN_PROGRAM_ID,
+           }
+         );
+       
+         let wsolBalance = 0;
+       
+         // Loop through the token accounts to find the one holding wSOL
+         for (const { pubkey, account } of tokenAccounts.value) {
+           const parsedAccountInfo = account.data.parsed.info;
+           const mintAddress = new PublicKey(parsedAccountInfo.mint);
+        
+           if (mintAddress.equals(WSOL_MINT_ADDRESS)) {
+             wsolBalance = parsedAccountInfo.tokenAmount.uiAmount;
+             break;
+           }
+        }
     }
 
 
