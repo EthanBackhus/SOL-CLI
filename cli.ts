@@ -1,9 +1,13 @@
 import  readline from 'readline';
 import { WalletManager } from "./src/wallet/WalletManager";
 import logger from "./src/helpers/logger";
-import { wallet } from './src/helpers/config';
+import { ADMIN_WALLET_PUBLIC_KEY, ADMIN_WALLET_SECRET_KEY, ADMIN_WALLET_SECRET_KEY_ENCODED, wallet } from './src/helpers/config';
 const {PASSWORD, ENCRYPTION_KEY} = require("./src/helpers/config.js");
 const { program } = require("commander");
+import { LAMPORTS_PER_SOL, PublicKey } from '@solana/web3.js';
+
+const AVG_SOL_TX_FEE: number = 0.00015;
+
 
 class CLI {
   private rl: readline.Interface;
@@ -39,9 +43,11 @@ class CLI {
         this.active = false;
         this.rl.close();
         break;
+
       case 'help':
         this.help();
         break;
+        
       case 'showwallets':
         this.showWallets();
         break;
@@ -55,6 +61,23 @@ class CLI {
       case 'showadminwallet':
         await this.showAdminWallet();
         break;
+
+      case 'fundallwallets':
+        await this.fundAllWallets(args);
+        break;
+
+      case 'changewallettype':
+        await this.changeWalletType();
+        break;
+
+      case 'getrentcost':
+        await this.getRentCost();
+        break;
+
+      case 'updatedbwithsolbalances':
+        await this.updateDbWithSolBalances();
+        break;
+
       default:
         console.log('Unknown command:', command);
         break;
@@ -91,12 +114,41 @@ class CLI {
     
   }
 
+  public async fundAllWallets(args: string[]): Promise<void> {
+    const numSolToSend = parseFloat(args[0]);
+    if(isNaN(numSolToSend) || numSolToSend <= 0){
+      console.log("Invalid number of sol to send");
+      return;
+    }
+    logger.info(`Admin wallet has ${this.walletManager.adminWallet.solBalance} sol (lamports)`);
+    const totalCost = (this.walletManager.wallets.length) * numSolToSend * LAMPORTS_PER_SOL;
+    const totalCostWithTxFees = (this.walletManager.wallets.length * AVG_SOL_TX_FEE * LAMPORTS_PER_SOL) + totalCost;
+    logger.info(`Total cost of the operation is ${totalCost}, with Tx Fees is estimated to be ${totalCostWithTxFees}`);
 
+    if(totalCostWithTxFees >= this.walletManager.adminWallet.solBalance) {
+      logger.info("There is (probably) not enough sol to complete transaction. Exiting...");
+    }
+
+    await this.walletManager.transferSOLToAllWallets(ADMIN_WALLET_SECRET_KEY_ENCODED as string, numSolToSend); // use type assertion
+  }
+
+  public async getRentCost(): Promise<void> {
+    const pubKey = new PublicKey(this.walletManager.adminWallet.publicKey);
+    const accountInfo = await this.walletManager.connection.getAccountInfo(pubKey);
+    const dataSize = accountInfo?.data.length;
+    console.log(`Datasize: ${dataSize}`);
+    const minBalance = await this.walletManager.connection.getMinimumBalanceForRentExemption(dataSize as number);
+    console.log(`Rent exempt num sol: ${minBalance}`);
+  }
+
+  public async updateDbWithSolBalances(): Promise<void> {
+    await this.walletManager.updateEntireDbWithSolBalances();
+  }
 
   // END COMMANDS
 
   private async handleClose(): Promise<void> {
-    await this.walletManager.dbHandler.updateDatabase(this.walletManager.wallets);
+    await this.walletManager.updateEntireDbWithSolBalances();
     logger.info("Now closing. Database Synced");
     this.cleanup();
   }
@@ -139,7 +191,12 @@ class CLI {
 const commands = {
   "ShowWallets" : "\t\t\tDisplays all wallets",
   "ShowAdminWallet": "\t\t\tShows admin wallet details",
-  "GenerateWallets <numWalletsToGen>": "\t\t\tGenerates wallets and adds them to the database"
+  "GenerateWallets <NumWalletsToGen>": "\t\t\tGenerates wallets and adds them to the database",
+  "ChangeWalletType <WalletId> <WalletTypeToChangeToo>": "\t\t\tChanges wallet to type specified",
+  "ChangeWalletTypeFromXtoY <WalletId1> <WalletId2> <WalletTypeToChangeToo>": "\t\t\tChanges all wallets from X to Y to walletType specified",
+  "FundAllWallets <AmountOfSolToSend>": "\t\t\tSends sol from admin wallet to all the wallets",
+  "GetRentCost" : "\t\t\t Gets the hardcoded rent cost",
+  "UpdateDbWithSolBalances": "Updates the entire db with sol balances (expensive)"
 };
 
 const cli = new CLI();

@@ -2,6 +2,7 @@ import  { generateKeypair } from "../wallet/walletGenerator";
 import mysql, { OkPacket, ResultSetHeader } from 'mysql2/promise';
 import { Wallet } from "../wallet/wallet";
 import logger from "../helpers/logger";
+import { DbUpdateObj } from "../helpers/dbUpdateObj";
 
 export class DBHandler {
     private _pool: mysql.Pool;
@@ -285,10 +286,28 @@ export class DBHandler {
         const connection = await this._pool.getConnection();
         try{
             const [results] = await connection.execute(query);
-            console.log("Db updated successfully");
+            logger.info("Db updated successfully");
         }
         catch(error) {
-            console.error("Error updating DB: ", error);
+            logger.error("Error updating DB: ", error);
+        }
+    }
+
+    async updateDbWithDbObj(dbUpdateObjs: DbUpdateObj[]): Promise<void> {
+        const connection = await this._pool.getConnection();
+        try{
+            for (const x of dbUpdateObjs)
+            {
+                const pubKey = x.pubKey;
+                const lamports = x.accountInfo.lamports;
+
+                const query = `UPDATE wallets SET solBalance = ? WHERE publicKey = ?`;
+                const [result] = await connection.execute(query, [lamports, pubKey]);
+            }
+            logger.info("Db updated successfully");
+        }
+        catch(error) {
+            logger.error("Error updating DB: ", error);
         }
     }
 
