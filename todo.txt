@@ -3,45 +3,13 @@ TODO: 7/21/24
 (DONE) 1. Find way to encrypt secretKeys of dbs
 (DONE) 2. create 20,000 wallets and encrypt them in the dbs
 3. backup the db
+(DONE) 4. Find a way to sync the wallet balances
+(DONE) 5. write scripts to fund all of the wallets
+6. write threadmanager program that will own all of the threads of the vol bot
+    - Think about how you're going to manage threads of thousands of different wallet transactions
 
 
-TODO:
-
-1. Continue to add new CLI features
-2. Transfer sol from admin wallet to db wallets
-3. Test features
-4. Create threadmanager program that will manage threads for all the db wallets
-
-
-
-good work today
-
-
-
-
-
-
-
-
-!IMPORTANT!!!!!!!!!!!!
-   
-- TEST everything lol
-
-TEST To make sure the x.owner.publicKey is right (since the ownership hasn't been changed???)
-
-
-
-
-4. Find a way to sync the wallet balances
-    - Get batch update for wallet balance (getMultipleAccountsInfo)
-5. write scripts to fund all of the wallets
-    - Also figure out how we're gonna update the DB with the correct amount of SOl
-
-
-
-
-5. write threadmanager program that will own all of the threads of the vol bot
-6. write different variations of vol bot script (buy and hold variation, buy and sell 0.00001 variation, volume variation (buy and sell 1 SOL))
-7. Create telegram bot that will be the UI for the vol bot
+7. write different variations of vol bot script (buy and hold variation, buy and sell 0.00001 variation, volume variation (buy and sell 1 SOL))
+8. Create telegram bot that will be the UI for the vol bot
 
 
