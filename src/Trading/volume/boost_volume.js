@@ -1,20 +1,14 @@
 const { connection, wallet } = require("../../helpers/config.js");
-const {
-  simple_executeAndConfirm,
-} = require("../../Transactions/simple_tx_executor");
-const {
-  jito_executeAndConfirm,
-} = require("../../Transactions/jito_tips_tx_executor");
+const { simple_executeAndConfirm,} = require("../../Transactions/simple_tx_executor");
+const {jito_executeAndConfirm,} = require("../../Transactions/jito_tips_tx_executor");
 const { buy, get_buy_transaction } = require("../dex/raydium/buy_helper");
 const { sell, get_sell_transaction } = require("../dex/raydium/sell_helper");
 const { program } = require("commander");
 const { loadOrCreateKeypair_wallet, checkTx } = require("../../helpers/util");
-const {
-  ComputeBudgetProgram,
-  TransactionMessage,
-  VersionedTransaction,
-} = require("@solana/web3.js");
+const {ComputeBudgetProgram,TransactionMessage,VersionedTransaction,} = require("@solana/web3.js");
 const { swapForVolume } = require("../../Pool/swap.js");
+import logger from "../helpers/logger";
+
 let slippage = null,
   tokenAddress = null,
   payer = null,
@@ -54,7 +48,7 @@ program.parse();
  * @function boost_volume
  * @returns {Promise<void>}
  */
-async function boost_volume() {
+export async function boost_volume() {
   while (true) {
     console.log(
       `Boosting volume..., buying and selling ${tokenAddress} in one transaction...`
@@ -75,12 +69,31 @@ async function boost_volume() {
 }
 
 /**
+ * Boosts the volume by buying and selling a token in one transaction.
+ * @async
+ * @function boost_volume
+ * @returns {Promise<void>}
+ */
+export async function boost_vol_once() {
+  logger.info(`Boosting volume..., buying and selling ${tokenAddress} in one transaction...`);
+
+  try {
+    const { confirmed, signature } = await swapForVolume(tokenAddress, solPerOrder);
+    await error_handling(signature, confirmed);
+  } catch (e) {
+    logger.info(e);
+    logger.info("trying to send the transaction again...");
+    await new Promise((resolve) => setTimeout(resolve, 2000));
+  }
+}
+
+/**
  * Handles error for a transaction.
  * @param {string} signature - The transaction signature.
  * @param {boolean} confirmed - Indicates if the transaction is confirmed.
  * @returns {Promise<void>} - A promise that resolves when the error handling is complete.
  */
-async function error_handling(signature, confirmed) {
+export async function error_handling(signature, confirmed) {
   if (confirmed) {
     console.log(`https://solscan.io/tx/${signature}?cluster=mainnet`);
     return;
@@ -93,4 +106,5 @@ async function error_handling(signature, confirmed) {
     console.log("trying to send the transaction again");
   }
 }
+
 boost_volume();

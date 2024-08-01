@@ -1,11 +1,6 @@
-const {
-  BlockhashWithExpiryBlockHeight,
-  Connection,
-  Keypair,
-  Transaction,
-  VersionedTransaction,
-} = require("@solana/web3.js");
+const {  BlockhashWithExpiryBlockHeight,  Connection,  Keypair,  Transaction,  VersionedTransaction,} = require("@solana/web3.js");
 const { connection } = require("../helpers/config.js");
+
 async function simple_executeAndConfirm(transaction, payer, lastestBlockhash) {
   console.log("Executing transaction...");
   const signature = await simple_execute(transaction);

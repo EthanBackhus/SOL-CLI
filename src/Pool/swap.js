@@ -1,51 +1,18 @@
 const assert = require("assert");
-
-const {
-  Liquidity,
-  Percent,
-  Token,
-  TOKEN_PROGRAM_ID,
-  TokenAmount,
-} = require("@raydium-io/raydium-sdk");
-const {
-  PublicKey,
-  TransactionMessage,
-  ComputeBudgetProgram,
-  VersionedTransaction,
-  LAMPORTS_PER_SOL
-} = require("@solana/web3.js");
+const {  Liquidity, Percent,  Token, TOKEN_PROGRAM_ID,  TokenAmount,} = require("@raydium-io/raydium-sdk");
+const { PublicKey, TransactionMessage, ComputeBudgetProgram,VersionedTransaction,LAMPORTS_PER_SOL} = require("@solana/web3.js");
 const { Decimal } = require("decimal.js");
 const { BN } = require("@project-serum/anchor");
 const { getSPLTokenBalance } = require("../helpers/check_balance.js");
-const {
-  connection,
-  DEFAULT_TOKEN,
-  makeTxVersion,
-  RAYDIUM_MAINNET_API,
-  _ENDPOINT,
-  wallet,
-  jito_fee
-} = require("../helpers/config.js");
-const {
-  getDecimals,
-  getTokenMetadata,
-  checkTx,
-} = require("../helpers/util.js");
+const { connection, DEFAULT_TOKEN,makeTxVersion,RAYDIUM_MAINNET_API,_ENDPOINT, wallet,jito_fee} = require("../helpers/config.js");
+const { getDecimals,getTokenMetadata,checkTx,} = require("../helpers/util.js");
 const { getPoolId, getPoolIdByPair } = require("./query_pool.js");
-const {
-  getAssociatedTokenAddress,
-  getAssociatedTokenAddressSync,
-  createAssociatedTokenAccountIdempotentInstruction,
-  createCloseAccountInstruction,
-} = require("@solana/spl-token");
+const {getAssociatedTokenAddress,getAssociatedTokenAddressSync,createAssociatedTokenAccountIdempotentInstruction,createCloseAccountInstruction,} = require("@solana/spl-token");
 const { mint } = require("@metaplex-foundation/mpl-candy-machine");
 const { formatAmmKeysById_swap } = require("./formatAmmKeysById.js");
-const {
-  simple_executeAndConfirm,
-} = require("../Transactions/simple_tx_executor.js");
-const {
-  jito_executeAndConfirm,
-} = require("../Transactions/jito_tips_tx_executor.js");
+const {simple_executeAndConfirm,} = require("../Transactions/simple_tx_executor.js");
+const {jito_executeAndConfirm,} = require("../Transactions/jito_tips_tx_executor.js");
+
 
 let tokenToPoolIdMap = {
 

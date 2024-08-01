@@ -1,5 +1,29 @@
 TODO: 7/21/24
 
+
+
+
+DON'T FORGET YOUR PURPOSE!!!!!!!!!
+
+What to do:
+
+1. Work on threadManager class to create and manage threads
+2. examine threadworker class to ensure that everything is getting built properly
+3. create functions to only create x amount of workers
+4. integrate walletmanager with threadmanager
+5. Test!
+6. After you confirm this works, create multiple types of buying / vol transactions
+7. TEST multiple transaction types (hodl, vol small, vol large)
+8. Scale up to 1000 threads
+9. punch fatality in the mf mouth
+
+
+Review these every single day. Don't worry about RPC node
+
+
+
+
+
 (DONE) 1. Find way to encrypt secretKeys of dbs
 (DONE) 2. create 20,000 wallets and encrypt them in the dbs
 3. backup the db
@@ -13,3 +37,8 @@ TODO: 7/21/24
 8. Create telegram bot that will be the UI for the vol bot
 
 
+
+
+BUGS:
+
+- Fix Update/sync sql query not working properly
