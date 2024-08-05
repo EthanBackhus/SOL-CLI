@@ -1,10 +1,13 @@
+/*
 const { parentPort, workerData } = require('worker_threads');
 const { swapForVolume } = require('../../Pool/swap.js');
 const { checkTx } = require('../../helpers/util');
+import {ThreadManager } from "./threadManager";
 
 const wallets = workerData.wallets;
 const tokenAddress = workerData.tokenAddress;
 const solPerOrder = workerData.solPerOrder;
+
 
 async function error_handling(signature, confirmed) {
   if (confirmed) {
@@ -30,9 +33,41 @@ async function processWallet(wallet) {
   }
 }
 
-(async () => {
-  for (const wallet of wallets) {
-    await processWallet(wallet);
-  }
-  parentPort.postMessage('done');
-})();
+
+parentPort.on('message', async (message) => {
+  console.log("GOT TO TEST!");
+  await testMessageAsync(message)
+});
+
+
+async function testMessageAsync(message: any) {
+  // simulate async operation
+  await new Promise(resolve => setTimeout(resolve, 1000));
+  console.log(`Received message from parent:`, message);
+}
+
+
+const tm = new ThreadManager();
+
+async function myTask() {
+  // Simulate some long-running task
+  await new Promise(resolve => setTimeout(resolve, 1000));
+  return 'Task completed';
+}
+
+async function main() {
+
+  await tm.startWorkers(4, myTask);
+  console.log('All workers started');
+
+  // ... do other work
+
+  await tm.stopWorkers();
+  console.log('All workers stopped');
+}
+
+
+main();
+*/
+
+

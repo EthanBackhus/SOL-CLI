@@ -5,52 +5,64 @@ import path from 'path';
 import { Worker, isMainThread, parentPort, workerData } from 'worker_threads';
 import { Keypair } from '@solana/web3.js';
 import { log } from 'winston';
+import {Wallet} from "../wallet/wallet";
 
 // 
 
+interface WorkerData {
+  task: string; // Name of the task to execute
+  data?: any; // Optional data for the task
+}
 
-class threadManager {
-    private wallets: Keypair[];
-    private tokenAddress: string;
-    private solPerOrder: number;
-    private workers: Worker[];
-  
-    constructor(wallets: Keypair[], tokenAddress: string, solPerOrder: number) {
-      this.wallets = wallets;
-      this.tokenAddress = tokenAddress;
-      this.solPerOrder = solPerOrder;
-      this.workers = [];
-    }
-  
-    createWorker(walletSubset: any[]) {
-      const worker = new Worker(path.resolve(__dirname, './threadWorker.ts'), {
-        workerData: {
-          wallets: walletSubset,
-          tokenAddress: this.tokenAddress,
-          solPerOrder: this.solPerOrder
-        }
+export class ThreadManager {
+  private workers: Worker[] = [];
+
+  constructor(){
+    
+  }
+
+  async createWorker(task: string, data?: any) {
+    const worker = new Worker(path.join(__dirname, 'threadWorker.js'), { workerData: { task, data } });
+    this.workers.push(worker);
+
+    return new Promise((resolve, reject) => {
+      worker.once('message', (result) => {
+        resolve(result);
       });
-  
-      worker.on('message', (message) => {
-        logger.info(`Worker message: ${message}`);
-        if (message === 'done') {
-          worker.terminate();
-        }
+
+      worker.once('error', (error) => {
+        reject(error);
       });
-  
-      worker.on('error', (error) => {
-        console.error(`Worker error: ${error.message}`);
-      });
-  
-      worker.on('exit', (code) => {
-        if (code !== 0) {
-          console.error(`Worker stopped with exit code ${code}`);
-        }
-      });
-  
-      this.workers.push(worker);
-    }
-  
+    });
+  }
+
+}
+/*
+if (!isMainThread) {
+  const { task } = workerData as WorkerData;
+  task().then(result => parentPort?.postMessage(result));
+}
+*/
+
+async function myTask() {
+  // Simulate some long-running task
+  await new Promise(resolve => setTimeout(resolve, 1000));
+  return 'Task completed';
+}
+
+
+var tm = new ThreadManager();
+
+
+
+//tm.createWorkers(4);
+
+
+
+
+
+
+/*
     async start() {
       const walletChunks = this.chunkWallets(this.wallets, Math.ceil(this.wallets.length / 10)); // Adjust the chunk size as needed
   
@@ -58,6 +70,7 @@ class threadManager {
         this.createWorker(walletSubset);
       }
     }
+    
   
     chunkWallets(wallets: any[], chunkSize: number): any[][] {
       const chunks: any[][] = [];
@@ -66,4 +79,4 @@ class threadManager {
       }
       return chunks;
     }
-  }
+    */
