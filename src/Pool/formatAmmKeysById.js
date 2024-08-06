@@ -24,7 +24,8 @@ const { connection } = require("../helpers/config.js");
  * @returns {Object} - The formatted AMM keys.
  * @throws {Error} - If there is an error retrieving the account information.
  */
-async function formatAmmKeysById_swap(id) {
+async function formatAmmKeysById_swap(id) 
+{
   const account = await connection.getAccountInfo(id);
   if (account === null) throw Error(" get id info error ");
   const info = LIQUIDITY_STATE_LAYOUT_V4.decode(account.data);
@@ -37,6 +38,7 @@ async function formatAmmKeysById_swap(id) {
       length: 32 * 3,
     },
   });
+  
   const marketAccount = await connection.getAccountInfo(marketId);
   if (marketAccount === null || marketAccount_minimal === null)
     throw Error(" get market info error");
