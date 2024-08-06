@@ -1,0 +1,11 @@
+2024-08-04T23:18:57.907Z [info]: This message will be logged to both console and file.
+2024-08-04T23:18:57.909Z [info]: This message will be logged only to the file.
+2024-08-04T23:18:57.910Z [info]: Generate 4 threads...
+2024-08-04T23:18:57.965Z [error]: Worker error: Cannot find module 'N:\Crypto\Solana\cli\solana-cli\src\threading\src\threading\threadWorker.ts'
+2024-08-04T23:18:57.967Z [error]: Worker error: Cannot find module 'N:\Crypto\Solana\cli\solana-cli\src\threading\src\threading\threadWorker.ts'
+2024-08-04T23:18:57.971Z [error]: Worker stopped with exit code 1
+2024-08-04T23:18:57.973Z [error]: Worker error: Cannot find module 'N:\Crypto\Solana\cli\solana-cli\src\threading\src\threading\threadWorker.ts'
+2024-08-04T23:18:57.973Z [error]: Worker error: Cannot find module 'N:\Crypto\Solana\cli\solana-cli\src\threading\src\threading\threadWorker.ts'
+2024-08-04T23:18:57.974Z [error]: Worker stopped with exit code 1
+2024-08-04T23:18:57.975Z [error]: Worker stopped with exit code 1
+2024-08-04T23:18:57.975Z [error]: Worker stopped with exit code 1

@@ -1,0 +1,5 @@
+2024-08-04T22:56:39.610Z [info]: This message will be logged to both console and file.
+2024-08-04T22:56:39.613Z [info]: This message will be logged only to the file.
+2024-08-04T22:56:41.526Z [info]: WalletManager initialized
+2024-08-04T22:56:43.656Z [info]: Password correct. Access granted.
+2024-08-04T22:57:13.133Z [info]: Wallet 9HataN88KBkQMPrstv6VNcX9pb4Ys2dFy8XfQvLj93HF has 0.015 SOL

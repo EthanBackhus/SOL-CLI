@@ -11,7 +11,7 @@
             "skipFiles": [
                 "<node_internals>/**"
             ],
-            "program": "${workspaceFolder}\\help.js",
+            "program": "${workspaceFolder}\\src\\threading\\threadWorker.ts",
             "outFiles": [
                 "${workspaceFolder}/**/*.js"
             ]

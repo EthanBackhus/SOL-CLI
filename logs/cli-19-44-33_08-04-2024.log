@@ -1,0 +1,2 @@
+2024-08-04T23:44:33.992Z [info]: This message will be logged to both console and file.
+2024-08-04T23:44:33.995Z [info]: This message will be logged only to the file.

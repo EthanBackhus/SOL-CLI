@@ -1,3 +1,0 @@
-2024-08-01T22:21:34.448Z [info]: This message will be logged to both console and file.
-2024-08-01T22:21:34.451Z [info]: This message will be logged only to the file.
-2024-08-01T22:21:34.452Z [info]: Master cluster setting up 4 workers

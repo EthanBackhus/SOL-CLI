@@ -6,7 +6,9 @@
       "rootDir": "./src",
       "esModuleInterop": true,
       "moduleResolution": "node",
-      "resolveJsonModule": true
+      "resolveJsonModule": true,
+      "sourceMap": true
     },
-    "include": ["src/**/*"]
+    "include": ["src/**/*"],
+
   }

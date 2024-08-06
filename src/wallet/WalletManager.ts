@@ -7,26 +7,39 @@ import logger from "../helpers/logger";
 import { TOKEN_PROGRAM_ID, AccountLayout } from "@solana/spl-token";
 import { Connection, Keypair, PublicKey, SystemProgram, Transaction, LAMPORTS_PER_SOL, sendAndConfirmRawTransaction, sendAndConfirmTransaction } from '@solana/web3.js';
 import { bs58 } from "@coral-xyz/anchor/dist/cjs/utils/bytes";
-import { createKeyPairFromStringsBase64, createKeyPairFromStringsHex, createKeypairFromStringBase58, extractLamports } from "../helpers/helpers";
+import { createKeyPairFromStringsBase64, createKeyPairFromStringsHex, createKeypairFromStringBase58, createKeypairsFromWallets, extractLamports } from "../helpers/helpers";
 import { DbUpdateObj } from "../helpers/dbUpdateObj";
+import {ThreadManager} from "../threading/threadManager";
 
+
+const grafCA = "9EL3CHVQS3nwUFhyVT7AGbttRsbJ5UE8Qjnw5ZAtkUhr";
+const solBuyPerOrder = 0.00001;
 
 export class WalletManager {
     public wallets: Wallet[];
     public dbHandler: DBHandler;
     public connection: Connection;
     public adminWallet: Wallet;
+    public threadManager: ThreadManager;
+
 
     constructor(encryptionKey: string){
         this.dbHandler = new DBHandler(encryptionKey);
         this.wallets = [];
         this.adminWallet = new Wallet(0, ADMIN_WALLET_PUBLIC_KEY, ADMIN_WALLET_SECRET_KEY, 0, 0, WalletType.Admin);
         this.connection = new Connection(main_endpoint, "confirmed");
+        this.threadManager = null;
     }
 
     async initialize(): Promise<void> {
         this.wallets = await this.dbHandler.getAllWallets();
         await this.updateAdminWalletBalance();
+        await this.initializeThreadManager();
+    }
+
+    async initializeThreadManager(): Promise<void> {
+        var walletKeypairs = await createKeypairsFromWallets(this.wallets);
+        this.threadManager = new ThreadManager(walletKeypairs, grafCA, solBuyPerOrder);
     }
 
     async generateNewWallets(numWalletsToGenerate: number)
@@ -35,9 +48,7 @@ export class WalletManager {
         {
             var newKp = generateKeypair();
             const newWallet = new Wallet(0, newKp.publicKeyString, newKp.secretKeyToString, 0, 0, WalletType.Hodl);
-            var newWalletLog = newWallet;
-            newWalletLog.secretKey = "***";
-            logger.info("New wallet generated: ", newWalletLog);
+            logger.info("New wallet generated: ", newWallet);
             await this.dbHandler.insertWallet(newWallet);
         }
     }
@@ -168,7 +179,9 @@ export class WalletManager {
             return `UPDATE wallets SET solBalance = ${lamports} WHERE publicKey = '${publicKey}'`;
         }).join('; ');
 
-        console.log(updateQueries);
+        // TODO: FIX
+        // !IMP ENABLE IF TRYING TO SAVE MANUALLY
+        //console.log(updateQueries);
         await this.dbHandler.updateDbWithQuery(updateQueries);
         
 
@@ -239,6 +252,10 @@ export class WalletManager {
              break;
            }
         }
+    }
+
+    async test(): Promise<void> {
+        
     }
 
 

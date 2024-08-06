@@ -78,6 +78,16 @@ class CLI {
         await this.updateDbWithSolBalances();
         break;
 
+      case 'runthreads':
+        await this.runThreads(args);
+        break;
+
+
+      //test
+      case 'test':
+        await this.test();
+        break;
+
       default:
         console.log('Unknown command:', command);
         break;
@@ -114,6 +124,16 @@ class CLI {
     
   }
 
+  public async runThreads(args: string[]): Promise<void> {
+    const numThreadsToRun = parseInt(args[0]);
+    if(isNaN(numThreadsToRun) || numThreadsToRun <= 0){
+      console.log("Invalid number of threads specified.");
+      return;
+    }
+    logger.info(`Generating ${numThreadsToRun} threads to run`);
+    await this.walletManager.threadManager.createWorkers(numThreadsToRun);
+  }
+
   public async fundAllWallets(args: string[]): Promise<void> {
     const numSolToSend = parseFloat(args[0]);
     if(isNaN(numSolToSend) || numSolToSend <= 0){
@@ -143,6 +163,10 @@ class CLI {
 
   public async updateDbWithSolBalances(): Promise<void> {
     await this.walletManager.updateEntireDbWithSolBalances();
+  }
+
+  public async test(): Promise<void> {
+    await this.walletManager.test();
   }
 
   // END COMMANDS
@@ -196,7 +220,8 @@ const commands = {
   "ChangeWalletTypeFromXtoY <WalletId1> <WalletId2> <WalletTypeToChangeToo>": "\t\t\tChanges all wallets from X to Y to walletType specified",
   "FundAllWallets <AmountOfSolToSend>": "\t\t\tSends sol from admin wallet to all the wallets",
   "GetRentCost" : "\t\t\t Gets the hardcoded rent cost",
-  "UpdateDbWithSolBalances": "Updates the entire db with sol balances (expensive)"
+  "UpdateDbWithSolBalances": "Updates the entire db with sol balances (expensive)",
+  "RunThreads <NumThreadsToRun>": "\t\t\tRuns num of threads specified with hardcoded CA"
 };
 
 const cli = new CLI();

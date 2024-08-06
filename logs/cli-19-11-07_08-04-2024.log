@@ -1,0 +1,7 @@
+2024-08-04T23:11:07.993Z [info]: This message will be logged to both console and file.
+2024-08-04T23:11:07.996Z [info]: This message will be logged only to the file.
+2024-08-04T23:11:09.833Z [info]: WalletManager initialized
+2024-08-04T23:11:13.992Z [info]: Password correct. Access granted.
+2024-08-04T23:12:16.951Z [info]: Generating 1 threads to run
+2024-08-04T23:12:17.015Z [error]: Worker error: Cannot find module 'N:\Crypto\Solana\cli\solana-cli\threadWorker.ts'
+2024-08-04T23:12:17.018Z [error]: Worker stopped with exit code 1

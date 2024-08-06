@@ -4,11 +4,10 @@ const { gql, GraphQLClient } = require("graphql-request");
 const { shyft_api_key } = require("../helpers/config");
 const {Liquidity} = require("@raydium-io/raydium-sdk");
 const { token } = require("@metaplex-foundation/js");
-const {getDecimals} = require(
-  "../helpers/util"
-)
+const {getDecimals} = require("../helpers/util")
 const graphQLEndpoint = `https://programs.shyft.to/v0/graphql/?api_key=${shyft_api_key}`;
 const rpcEndpoint = `https://rpc.shyft.to/?api_key=${shyft_api_key}`;
+import logger from "../helpers/logger";
 
 
 
@@ -314,8 +313,9 @@ async function queryLpPair(tokenOne, tokenTwo) {
  */
 async function getPoolId(token) {
   const poolId = await queryLpByToken(token);
-  if (poolId.Raydium_LiquidityPoolv4.length === 0) {
-    console.log(`Cannot find any liquidity pool related to ${token}`);
+  if (poolId.Raydium_LiquidityPoolv4.length === 0) 
+  {
+    logger.info(`Cannot find any liquidity pool related to ${token}`);
     return null;
   }
 
@@ -332,13 +332,12 @@ async function getPoolIdByPair(baseToken) {
   const quoteToken = "So11111111111111111111111111111111111111112";
   const poolId = await queryLpPair(baseToken, quoteToken);
   if (poolId.Raydium_LiquidityPoolv4.length === 0) {
-    console.log(`Cannot find any liquidity pool related to ${baseToken}/${quoteToken}`);
-    console.log(`It may be a token launched on pump.fun, we try to find ${quoteToken}/${baseToken}`)
+    logger.info(`Cannot find any liquidity pool related to ${baseToken}/${quoteToken}`);
+    logger.info(`It may be a token launched on pump.fun, we try to find ${quoteToken}/${baseToken}`)
     const poolIdByPair = await queryLpPair(quoteToken, baseToken);
-    if (poolIdByPair.Raydium_LiquidityPoolv4.length === 0) {
-      console.log(
-        `Cannot find any liquidity pool related to ${quoteToken}/${baseToken}`
-      );
+    if (poolIdByPair.Raydium_LiquidityPoolv4.length === 0) 
+    {
+      logger.info(`Cannot find any liquidity pool related to ${quoteToken}/${baseToken}`);
       throw new Error(`Cannot find any liquidity pool related to ${quoteToken}`);
       return null;
     }else{

@@ -7,10 +7,10 @@ DON'T FORGET YOUR PURPOSE!!!!!!!!!
 
 What to do:
 
-1. Work on threadManager class to create and manage threads
-2. examine threadworker class to ensure that everything is getting built properly
-3. create functions to only create x amount of workers
-4. integrate walletmanager with threadmanager
+(DONE) 1. Work on threadManager class to create and manage threads
+(IN PROGRESS) 2. Set up threads to run vol bot once
+3. Hook up threads to walletManager to create threads
+4. Create way in walletManger (or threadManager) to create threads, view all active threads, delete threads, etc
 5. Test!
 6. After you confirm this works, create multiple types of buying / vol transactions
 7. TEST multiple transaction types (hodl, vol small, vol large)

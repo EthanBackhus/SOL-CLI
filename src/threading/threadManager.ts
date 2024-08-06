@@ -1,19 +1,29 @@
 import { Worker } from 'worker_threads';
 import path from 'path';
+import { Wallet } from '../wallet/wallet';
+import { Keypair } from '@solana/web3.js';
 
 interface WorkerData {
   tokenAddress: string;
   solPerOrder: number;
+  walletKeypair: Keypair;
   
 }
 
-class ThreadManager {
+export class ThreadManager {
   private maxThreads: number;
   private idleThreads: Worker[];
+  public walletKeypairs: Keypair[];
+  public CA: string;
+  public solBuyPerOrder: number;
 
-  constructor(maxThreads: number) {
-    this.maxThreads = maxThreads;
+  constructor(walletKeypairs: Keypair[], CA: string, solBuyPerOrder: number) {
+    this.maxThreads = 10;
     this.idleThreads = [];
+
+    this.walletKeypairs = walletKeypairs;
+    this.CA = CA;
+    this.solBuyPerOrder = solBuyPerOrder;
   }
 
   async createWorker(data: WorkerData): Promise<any> {

@@ -1,0 +1,7 @@
+2024-08-04T23:13:57.238Z [info]: This message will be logged to both console and file.
+2024-08-04T23:13:57.241Z [info]: This message will be logged only to the file.
+2024-08-04T23:13:59.073Z [info]: WalletManager initialized
+2024-08-04T23:14:01.303Z [info]: Password correct. Access granted.
+2024-08-04T23:14:05.144Z [info]: Generating 1 threads to run
+2024-08-04T23:14:05.199Z [error]: Worker error: Unexpected token ':'
+2024-08-04T23:14:05.200Z [error]: Worker stopped with exit code 1

@@ -1,0 +1,4 @@
+2024-08-04T22:54:21.906Z [info]: This message will be logged to both console and file.
+2024-08-04T22:54:21.910Z [info]: This message will be logged only to the file.
+2024-08-04T22:54:23.725Z [info]: WalletManager initialized
+2024-08-04T22:54:25.705Z [info]: Password correct. Access granted.

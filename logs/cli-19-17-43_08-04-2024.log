@@ -1,0 +1,28 @@
+2024-08-04T23:17:43.115Z [info]: This message will be logged to both console and file.
+2024-08-04T23:17:43.118Z [info]: This message will be logged only to the file.
+2024-08-04T23:17:44.739Z [info]: WalletManager initialized
+2024-08-04T23:17:46.922Z [info]: Password correct. Access granted.
+2024-08-04T23:17:49.127Z [info]: Generating 1 threads to run
+2024-08-04T23:17:49.128Z [info]: Generate 1 threads...
+2024-08-04T23:17:49.176Z [error]: Worker error: Unexpected token ':'
+2024-08-04T23:17:49.177Z [error]: Worker stopped with exit code 1
+2024-08-04T23:18:42.197Z [info]: Wallet 9HataN88KBkQMPrstv6VNcX9pb4Ys2dFy8XfQvLj93HF has 0.015 SOL
+2024-08-04T23:18:42.198Z [info]: Wallet C7g2LScB5ZmVNnev9f43L9fYbdfSnDc1UdquL6vwUKst has 0.01 SOL
+2024-08-04T23:18:42.198Z [info]: Wallet BmBA6dr8tSwAgP5FzaAKJTQ8t72StoeTVzCi9kU1NZFS has 0.01 SOL
+2024-08-04T23:18:42.198Z [info]: Wallet H2ziRmtL8U9M3nXhqj2gbidBgtnpqxCVbKutJghpiA4D has 0.005 SOL
+2024-08-04T23:18:42.199Z [info]: Wallet BETNDytLj7VPB4DKha7LLTo3oSiRDzsCmMGNa2xY1X6f has 0.005 SOL
+2024-08-04T23:18:42.199Z [info]: Wallet 6VJonKKbQkDk8Zo9udL2GAS5nNz3je9x2Ww1jDTwZMRq has 0.005 SOL
+2024-08-04T23:18:42.200Z [info]: Wallet 9stqe2s9jewV7SWknMwsnBQ6LFQ1qmeqQDBPGWnViorb has 0.005 SOL
+2024-08-04T23:18:42.201Z [info]: Wallet DmHdvxhd4oMWPcCoRsDJdtysjCZjHN9zMy4tsPV7jne5 has 0.005 SOL
+2024-08-04T23:18:42.201Z [info]: Wallet DN23HqktatUwM46meEGPmrNuYrdBj8Nw6Z6CkZnVgLUp has 0.005 SOL
+2024-08-04T23:18:42.201Z [info]: Wallet damBzB83jXcQvEAx8Pb8VDMXpfeXQBryLFYn7qTrTPH has 0.005 SOL
+2024-08-04T23:18:42.202Z [info]: Wallet 9SC9vuVbEH6xVEnd8d7zvf1cUc2TXD5DmBd64KVfywLd has 0.005 SOL
+2024-08-04T23:18:42.202Z [info]: Wallet ADzDaSrGkUAKV7VweV37Txp6sVLfK5ixkSmjjiW2ckGY has 0.005 SOL
+2024-08-04T23:18:42.202Z [info]: Wallet GGzgQdGavEgd7Wc9jCtdw5xyDrdoiKiqEg5acQVjfbsS has 0.005 SOL
+2024-08-04T23:18:42.202Z [info]: Wallet 41g8916S2QKd2xsE1zSgBkDXckiS5EXRHkcGFfjPeGJB has 0.005 SOL
+2024-08-04T23:18:42.203Z [info]: Wallet 599UZ8TXjF9CviKhKnDHngmrgefQCRLpHMnTNrizan1b has 0.005 SOL
+2024-08-04T23:18:42.203Z [info]: Wallet AJ6H3H4m8hJ7HFKZZLbGG6KWLycZ31Vq6dTLsLfzEKvo has 0.005 SOL
+2024-08-04T23:18:42.203Z [info]: Wallet CqF4ZEZpFHyffhSVW4ftk6vBu5LCEjxYojhqex3iJ1HQ has 0.005 SOL
+2024-08-04T23:18:42.204Z [info]: Wallet AAiv4Yp1rU7VWzKy8peQAFvWVxXuLeqfFirVmR7fX19s has 0.005 SOL
+2024-08-04T23:18:42.204Z [info]: Wallet G2jM3bL7i1GXbkhdkVh9NkmzHgoWvUHQ29EiMW8YXPci has 0.005 SOL
+2024-08-04T23:18:42.204Z [info]: Wallet J2Lxf1N2URKD2DX9iFmCMf5KqbRceZruJ8xrWpoYJkqY has 0.005 SOL

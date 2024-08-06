@@ -1,0 +1,11 @@
+2024-08-04T23:22:30.845Z [info]: This message will be logged to both console and file.
+2024-08-04T23:22:30.849Z [info]: This message will be logged only to the file.
+2024-08-04T23:22:30.850Z [info]: Generate 4 threads...
+2024-08-04T23:22:30.901Z [error]: Worker error: Unexpected token ':'
+2024-08-04T23:22:30.908Z [error]: Worker stopped with exit code 1
+2024-08-04T23:22:30.910Z [error]: Worker error: Unexpected token ':'
+2024-08-04T23:22:30.915Z [error]: Worker stopped with exit code 1
+2024-08-04T23:22:30.918Z [error]: Worker error: Unexpected token ':'
+2024-08-04T23:22:30.919Z [error]: Worker stopped with exit code 1
+2024-08-04T23:22:30.921Z [error]: Worker error: Unexpected token ':'
+2024-08-04T23:22:30.923Z [error]: Worker stopped with exit code 1

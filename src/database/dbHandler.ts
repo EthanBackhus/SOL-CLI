@@ -63,6 +63,28 @@ export class DBHandler {
     }
 
     /**
+    * Deletes a wallet in the DB by Id
+    * @async
+    * @function deleteWallet
+    * @param {string} walletId - The publicKey of the wallet to be deleted
+    * @returns {Promise<void>}
+    */
+    async deleteWalletById(walletId: number): Promise<void> {
+        const connection = await this._pool.getConnection();
+        try {
+          const [results] = await connection.execute(`
+            DELETE FROM wallets
+            WHERE walletId = ?
+          `, [walletId]);
+          console.log('Wallet deleted successfully:', results);
+        } catch (error) {
+          console.error('Error deleting wallet:', error);
+        } finally {
+          connection.release();
+        }
+      }
+
+    /**
     * Modifies a wallet stored in the db
     * @async
     * @function modifyWallet
