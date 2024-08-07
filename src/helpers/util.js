@@ -15,6 +15,7 @@ async function getDecimals(mintAddress) {
   const result = (info.value?.data).parsed.info.decimals || 0;
   return result;
 }
+
 /**
  * Retrieves the metadata of a token based on its address.
  * @param {string} address - The address of the token.

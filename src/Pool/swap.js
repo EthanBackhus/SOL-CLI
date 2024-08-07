@@ -16,8 +16,6 @@ import { jito_executeAndConfirm } from "../Transactions/jito_tips_tx_executor.js
 import logger from "../helpers/logger.js";
 */
 
-
-
 const assert = require("assert");
 const {  Liquidity, Percent,  Token, TOKEN_PROGRAM_ID,  TokenAmount,} = require("@raydium-io/raydium-sdk");
 const { PublicKey, TransactionMessage, ComputeBudgetProgram,VersionedTransaction,LAMPORTS_PER_SOL} = require("@solana/web3.js");
@@ -43,8 +41,8 @@ let tokenToPoolIdMap = {
  * @returns {Object} - The transaction IDs of the executed swap operation.
  */
 async function swapOnlyAmm(input) {
-  // -------- pre-action: get pool info --------\
 
+  // -------- pre-action: get pool info --------\
   const poolKeys = await formatAmmKeysById_swap(new PublicKey(input.targetPool));
   assert(poolKeys, "cannot find the target pool");
   const poolInfo = await Liquidity.fetchInfo({connection: connection,poolKeys: poolKeys,});

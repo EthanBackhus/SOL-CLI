@@ -2,22 +2,27 @@ import { Worker } from 'worker_threads';
 import path from 'path';
 import { Wallet } from '../wallet/wallet';
 import { Keypair } from '@solana/web3.js';
+import logger from "../helpers/logger.js";
+import getPoolIdByPair from '../Pool/query_pool';
 
-interface WorkerData {
-  tokenAddress: string;
+interface WorkerData
+{
+  CA: string;
   solPerOrder: number;
   walletKeypair: Keypair;
-  
+  poolIdPair: string;
 }
 
-export class ThreadManager {
+export class ThreadManager
+{
   private maxThreads: number;
   private idleThreads: Worker[];
   public walletKeypairs: Keypair[];
   public CA: string;
   public solBuyPerOrder: number;
+  public poolIdPair: string;
 
-  constructor(walletKeypairs: Keypair[], CA: string, solBuyPerOrder: number) {
+  constructor(walletKeypairs: Keypair[], solBuyPerOrder: number, CA: string) {
     this.maxThreads = 10;
     this.idleThreads = [];
 
@@ -26,10 +31,21 @@ export class ThreadManager {
     this.solBuyPerOrder = solBuyPerOrder;
   }
 
+  async initialize(): Promise<void> {
+    var targetPool = await getPoolIdByPair(this.CA);   // THIS MIGHT BE ABLE TO BE AUTOMATED, INVESTIGATE
+
+    if (targetPool === null)
+    {
+      logger.info("Pool not found or raydium is not supported for this token. Exiting...");
+      throw new Error("Pool not found or raydium is not supported for this token. Exiting...");
+    }
+    this.poolIdPair = targetPool;
+  }
+
   async createWorker(data: WorkerData): Promise<any> {
 
     return new Promise((resolve, reject) => {
-      const workerPath = path.join(__dirname, 'threadWorker.js'); // Replace with your worker script path
+      const workerPath = path.join(__dirname, 'volSwapThread.js'); // Replace with your worker script path
 
       const worker = new Worker(workerPath, { workerData: data });
 
@@ -53,7 +69,6 @@ export class ThreadManager {
   }
 
   async runTask(data: WorkerData): Promise<any> {
-
     console.log("running task...");
     if (this.idleThreads.length > 0) 
     {
@@ -71,6 +86,9 @@ export class ThreadManager {
       return this.createWorker(data);
     }
   }
+
+
+
 }
 
 

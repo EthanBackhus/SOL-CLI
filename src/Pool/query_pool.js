@@ -306,6 +306,7 @@ async function queryLpPair(tokenOne, tokenTwo) {
   const response = await graphQLClient.request(query, variables);
   return response;
 }
+
 /**
  * Retrieves the pool ID associated with the given token.
  * @param {string} token - The token to query the pool ID for.
@@ -327,7 +328,8 @@ async function getPoolId(token) {
  * @param {string} baseToken - The base token.
  * @returns {string|null} - The pool ID if found, otherwise null.
  */
-async function getPoolIdByPair(baseToken) {
+async function getPoolIdByPair(baseToken) 
+{
   // token/SOL pair
   const quoteToken = "So11111111111111111111111111111111111111112";
   const poolId = await queryLpPair(baseToken, quoteToken);
@@ -347,6 +349,7 @@ async function getPoolIdByPair(baseToken) {
   }
   return poolId.Raydium_LiquidityPoolv4[0].pubkey;
 }
+
 async function main() {
   // getting the pool address for npch
   //const poolId = await getPoolIdByPair("token_address")
