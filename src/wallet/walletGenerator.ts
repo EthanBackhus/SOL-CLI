@@ -56,7 +56,4 @@ console.log('Public Key:', publicKey);
 console.log('Secret Key:', Buffer.from(secretKey).toString('hex'));
 console.log("Secret Key Encoded: ", secretKeyEncoded.toString());
 
-// PUB KEY: 5wotKZQU7E64Jj1kGrxfmJoNcunhsfWiqNs6yxnxYkRh
-// SECRET KEY: 395b464ae42691a928f1c25f5f3230fa571c8a266d16ad1c4a7fbc9c49be5b0d49791fce1990451a555ea5434ef83d77d3922f967a18c97e5318997d13e1c1cc
-// SECRET KEY ENCODED: 29Wdvcw4vnvP7WbwbwQKv8sBWVbnDzgZCBcXDfxW2bKxss3xPtvVLwgvhLzr126diyjUMSDrwJhRJYYGHrjv8HMV
 */
